@@ -48,13 +48,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(date['success'])
         self.assertTrue(len(date['categories']))
 
-    # def test_2_get_categories_not_found(self):
-    #     res = self.client().get('/categories/1000')
-    #     data = json.loads(res.data)
+    def test_2_get_categories_not_found(self):
+        res = self.client().get('/categories/1000')
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 404)
-    #     self.assertFalse(data['success'])
-    #     self.assertEqual(data['message'], 'resource not found')
+        self.assertEqual(res.status_code, 404)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'resource not found')
 
     def test_3_get_questions(self): # get all questions
         res = self.client().get('/questions')
@@ -83,14 +83,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
     def test_6_delete_question(self): # delete question
-        res = self.client().delete('/questions/4')
+        res = self.client().delete('/questions/12')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id==10).one_or_none()
+        question = Question.query.filter(Question.id==12).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'])
-        self.assertEqual(data['deleted'], 4)
+        self.assertEqual(data['deleted'], 12)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
@@ -119,14 +119,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
 
-    # def test_8_create_invalid_question(self):
-    #     res = self.client().post('/questions/45')
-    #     data = json.loads(res.data)
-
-    #     self.assertEquals(res.status_code, 422)
-    #     self.assertFalse(data['success'])
-    #     self.assertEqual(data['message'], 'unprocessable')
-        
 
     def test_9_search_questions(self): # search questions
         res = self.client().post('/questions/search', json={
