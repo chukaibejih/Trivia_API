@@ -65,8 +65,7 @@ def create_app(test_config=None):
             current_questions = paginated_questions(request, selection)
             categories = Category.query.all()
             categories_list = {category.id: category.type for category in categories}
-            # if len(current_questions) == 0:
-            #     abort(404)
+            
             return jsonify({
                 'success': True,
                 'questions': current_questions,
@@ -168,6 +167,7 @@ def create_app(test_config=None):
             category = Category.query.get(category_id)
             questions = Question.query.filter(Question.category == category.id).all()
             current_questions = paginated_questions(request, questions)
+            print(current_questions)
             categories = Category.query.all()
             categories_list = [category.format() for category in categories]
             if len(current_questions) == 0:
@@ -227,7 +227,7 @@ def create_app(test_config=None):
             "success": False,
             "error": 404,
             "message": "resource not found"
-        })
+        }), 404
 
     @app.errorhandler(422)
     def unprocessable(error):
@@ -235,7 +235,7 @@ def create_app(test_config=None):
             "success": False,
             "error": 422,
             "message": "unprocessable"
-        })
+        }), 422
 
     @app.errorhandler(400)
     def bad_request(error):
@@ -243,7 +243,15 @@ def create_app(test_config=None):
             "success": False,
             "error": 400,
             "message": "bad request"
-        })
+        }), 400
+
+    @app.errorhandler(500)
+    def server_error(error):
+        return jsonify ({
+            "success": False,
+            "error": 500,
+            "message": "server error"
+        }), 500
 
     return app
 
